@@ -1,5 +1,6 @@
 package com.mau.sqlite_prueba
 
+import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
@@ -89,5 +90,24 @@ class BaseDatos (contexto:Context):SQLiteOpenHelper(contexto, "Factura", null, 1
         }finally {
             db.close()
         }
+    }
+    @SuppressLint("Range")
+    fun listar():MutableList<Producto>{
+        val lista: MutableList<Producto> = ArrayList()
+        val db = this.readableDatabase
+        val sql = "select * from Producto"
+        var resultado = db.rawQuery(sql, null)
+        if (resultado.moveToFirst()) {
+           do {
+               var datosp=Producto();
+               datosp.id = resultado.getString(resultado.getColumnIndex("id")).toInt()
+               datosp.name = resultado.getString(resultado.getColumnIndex("name"))
+               datosp.cantidad = resultado.getInt(resultado.getColumnIndex("cantidad"))
+               lista.add(datosp)
+           }while (resultado.moveToNext())
+           resultado.close()
+            db.close()
+        }
+        return lista
     }
 }
