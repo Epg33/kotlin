@@ -1,0 +1,91 @@
+Ethiem Alexander Guerrero Pernia ADSI 2448515
+
+Grupo A:
+crear una app que contenga los siguientes datos: nit, nombre, direccion, telefono, email y pagina web utilizando base de datos Sqlite. Hacer los metodo guardar y listar
+
+class MainActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+    }
+}
+
+
+
+class Empresa {
+    constructor(nit: String, nombre: String, direccion: String, telefono: String, email: String, pagina_web: String){
+        this.nit = nit
+        this.nombre = nombre
+        this.direccion = direccion
+        this.telefono = telefono
+        this.email = email
+        this.pagina_web = pagina_web
+    }
+    
+    var nit: String = "";
+    var nombre: String = "";
+    var direccion: String = "";
+    var telefono: String = "";
+    var email: String = "";
+    var pagina_web: String = "";
+}
+
+
+
+class DB (contexto:Context):SQLiteOpenHelper(contexto, "Empresa", null, 1){
+    override fun onCreate(db: SQLiteDatabase?) {
+        var sql = "create table Empresa(nit varchar(30) primary key, nombre varchar(50) not null, email varchar(30) not null, direccion varchar(30) not null, telefono varchar(10) not null, pagina_web varchar(256))"
+        db?.execSQL(sql)
+    }
+
+    override fun onUpgrade(p0: SQLiteDatabase?, p1: Int, p2: Int) {
+        TODO("Not yet implemented")
+    }
+
+    fun Guardar(empresa: Empresa) : String {
+        val db = this.writableDatabase;
+        var contenedor = ContentValues();
+        contenedor.put("nit", empresa.cedula)
+        contenedor.put("nombre", empresa.nombre)
+        contenedor.put("email", empresa.email)
+        contenedor.put("direccion", empresa.direccion)
+        contenedor.put("telefono", empresa.telefono)
+        contenedor.put("pagina_web", empresa.pagina_web)
+        try {
+            var resultado = db.insert("Empresa", null, contenedor);
+
+            if (resultado == (-1).toLong()){
+                return "Hubo un error al Guardar";
+            }
+            return "Se guardo correctamente";
+        } catch (ex: Exception) {
+            return ex.message.toString();
+        } finally {
+            db.close()
+        }
+    }
+
+    
+    @SuppressLint("Range")
+    fun listar():MutableList<Empresa>{
+        val lista: MutableList<Empresa> = ArrayList()
+        val db = this.readableDatabase
+        val sql = "select * from Empresa"
+        var resultado = db.rawQuery(sql, null)
+        if (resultado.moveToFirst()) {
+            do {
+                var datose=Person();
+                datose.nit = resultado.getString(resultado.getColumnIndex("nit"))
+                datose.nombre = resultado.getString(resultado.getColumnIndex("nombre"))
+                datose.email = resultado.getString(resultado.getColumnIndex("email"))
+                datose.direccion = resultado.getString(resultado.getColumnIndex("direccion"))
+                datose.telefono = resultado.getString(resultado.getColumnIndex("telefono"))
+                datose.pagina_web = resultado.getInt(resultado.getColumnIndex("pagina_web"))
+                lista.add(datose)
+            }while (resultado.moveToNext())
+            resultado.close()
+            db.close()
+        }
+        return lista
+    }
+}
