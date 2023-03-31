@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper
 
 class DB (contexto:Context):SQLiteOpenHelper(contexto, "Person", null, 1){
     override fun onCreate(db: SQLiteDatabase?) {
-        var sql = "create table Person(id integer primary key AUTOINCREMENT, cedula varchar(10) not null, nombre varchar(20) not null, apellido varchar(20) not null, telefono varchar(10) not null, edad integer not null)"
+        var sql = "create table Person(id integer primary key AUTOINCREMENT, cedula varchar(10) not null, nombre varchar(20) not null, apellido varchar(20) not null, telefono varchar(10) not null, edad integer not null, sueldo integer not null)"
         db?.execSQL(sql)
     }
 
@@ -24,6 +24,7 @@ class DB (contexto:Context):SQLiteOpenHelper(contexto, "Person", null, 1){
         contenedor.put("apellido", persona.apellido)
         contenedor.put("telefono", persona.telefono)
         contenedor.put("edad", persona.edad)
+        contenedor.put("sueldo", persona.sueldo)
         try {
             var resultado = db.insert("Person", null, contenedor);
 
@@ -38,7 +39,7 @@ class DB (contexto:Context):SQLiteOpenHelper(contexto, "Person", null, 1){
         }
     }
 
-    fun Actualizar(cedula:String, id:Int, nombre:String, apellido:String, telefono: String,  edad: Int) : String{
+    fun Actualizar(cedula:String, id:Int, nombre:String, apellido:String, telefono: String,  edad: Int, sueldo: Int) : String{
         val db = this.writableDatabase;
         var contenedor = ContentValues();
         contenedor.put("cedula", cedula)
@@ -46,6 +47,7 @@ class DB (contexto:Context):SQLiteOpenHelper(contexto, "Person", null, 1){
         contenedor.put("apellido", apellido)
         contenedor.put("telefono", telefono)
         contenedor.put("edad", edad)
+        contenedor.put("sueldo", sueldo)
         try{
             var resultado = db.update("Person", contenedor,"id=?", arrayOf(id.toString()));
 
@@ -92,6 +94,7 @@ class DB (contexto:Context):SQLiteOpenHelper(contexto, "Person", null, 1){
                 datosp.apellido = resultado.getString(resultado.getColumnIndex("apellido"))
                 datosp.telefono = resultado.getString(resultado.getColumnIndex("telefono"))
                 datosp.edad = resultado.getInt(resultado.getColumnIndex("edad"))
+                datosp.sueldo = resultado.getInt(resultado.getColumnIndex("sueldo"))
                 lista.add(datosp)
             }while (resultado.moveToNext())
             resultado.close()
