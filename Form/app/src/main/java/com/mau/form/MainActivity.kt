@@ -29,6 +29,7 @@ class MainActivity : AppCompatActivity() {
         telefono=findViewById(R.id.txtTelefono)
         sueldo=findViewById(R.id.txtSueldo)
         id=findViewById(R.id.txtId)
+        listD=findViewById(R.id.txtData)
     }
 
     fun SaveData(view: View) {
@@ -61,6 +62,22 @@ class MainActivity : AppCompatActivity() {
         var db = DB(this)
         if (id.text.isNotEmpty()){
             db.Eliminar(id.text.toString().toInt())
+        }
+    }
+
+    fun updateData(view:View) {
+        listD.text=""
+        var db = DB(this)
+        var person = Person()
+        if(nombre.text.toString().isNotEmpty() && apellido.text.toString().isNotEmpty() && telefono.text.toString().isNotEmpty() && cedula.text.toString().isNotEmpty() && edad.text.toString().isNotEmpty() && sueldo.text.toString().isNotEmpty()) {
+            person.cedula = cedula.text.toString()
+            person.nombre = nombre.text.toString()
+            person.apellido = apellido.text.toString()
+            person.edad = edad.text.toString().toInt()
+            person.telefono = telefono.text.toString()
+            person.sueldo = sueldo.text.toString().toInt()
+            var message = db.Actualizar(person.cedula, id.text.toString().toInt(), person.nombre, person.apellido, person.telefono, person.edad, person.sueldo)
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
         }
     }
 }
